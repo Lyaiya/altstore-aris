@@ -1,5 +1,4 @@
 repo = "FoxSensei001/LoveIwara"
 source = "nsfw"
-order = 10
 asset_pattern = '^i_iwara-.*-ios\.ipa$'
 bundle_identifier = "m.c.g.a.i-iwara"

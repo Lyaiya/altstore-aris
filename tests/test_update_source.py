@@ -119,30 +119,32 @@ class AppInfoFromIpaTests(unittest.TestCase):
 
 
 class SplitSourceTests(unittest.TestCase):
-    def test_upstream_configs_are_discovered_in_source_order(self) -> None:
+    def test_upstream_configs_are_discovered_in_source_and_repo_order(self) -> None:
         configs = load_upstream_apps()
 
         self.assertEqual(
             [config["app_path"] for config in configs],
             [
-                "apps/mikan/app.json",
-                "apps/melox/app.json",
-                "apps/venera-prime/app.json",
-                "apps/love-iwara/app.json",
+                "data/apps/mikan/app.json",
+                "data/apps/venera-prime/app.json",
+                "data/apps/melox/app.json",
+                "data/apps/love-iwara/app.json",
             ],
         )
 
     def test_main_source_is_built_from_config_and_split_app_files(self) -> None:
         source_config = json.loads(
-            (ROOT / "config" / "source.json").read_text(encoding="utf-8")
+            (ROOT / "data" / "source" / "source.json").read_text(
+                encoding="utf-8"
+            )
         )
         split_apps = [
             json.loads(
-                (ROOT / "apps" / directory / "app.json").read_text(
+                (ROOT / "data" / "apps" / directory / "app.json").read_text(
                     encoding="utf-8"
                 )
             )
-            for directory in ("mikan", "melox", "venera-prime")
+            for directory in ("mikan", "venera-prime", "melox")
         ]
         source = read_source()
 
@@ -156,18 +158,20 @@ class SplitSourceTests(unittest.TestCase):
             source["apps"][0]["versions"][0]["marketingVersion"], "2.3.6"
         )
         self.assertEqual(
-            source["apps"][1]["versions"][0]["marketingVersion"], "1.2.1"
+            source["apps"][1]["versions"][0]["marketingVersion"], "2.4.1"
         )
         self.assertEqual(
-            source["apps"][2]["versions"][0]["marketingVersion"], "2.4.1"
+            source["apps"][2]["versions"][0]["marketingVersion"], "1.2.1"
         )
 
     def test_nsfw_source_is_built_separately(self) -> None:
         source_config = json.loads(
-            (ROOT / "config" / "source-nsfw.json").read_text(encoding="utf-8")
+            (ROOT / "data" / "source" / "source-nsfw.json").read_text(
+                encoding="utf-8"
+            )
         )
         love_iwara = json.loads(
-            (ROOT / "apps" / "love-iwara" / "app.json").read_text(
+            (ROOT / "data" / "apps" / "love-iwara" / "app.json").read_text(
                 encoding="utf-8"
             )
         )

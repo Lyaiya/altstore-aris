@@ -1,7 +1,5 @@
 {
   "name": "Aris NSFW Source",
-  "subtitle": "独立收录成人内容应用的 AltStore Classic 源",
-  "description": "此源仅收录可能包含成人内容的第三方应用，并与常规应用源分开维护。",
   "iconURL": "https://github.com/Lyaiya.png",
   "website": "https://github.com/Lyaiya/altstore-aris",
   "tintColor": "#F97316",

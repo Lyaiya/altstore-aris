@@ -23,16 +23,16 @@ GITHUB_API_VERSION = "2026-03-10"
 
 SOURCES = {
     "main": {
-        "config_path": ROOT / "config" / "source.json",
+        "config_path": ROOT / "data" / "source" / "source.json",
         "output_path": ROOT / "dist" / "source.json",
     },
     "nsfw": {
-        "config_path": ROOT / "config" / "source-nsfw.json",
+        "config_path": ROOT / "data" / "source" / "source-nsfw.json",
         "output_path": ROOT / "dist" / "source-nsfw.json",
     },
 }
 
-APPS_ROOT = ROOT / "apps"
+APPS_ROOT = ROOT / "data" / "apps"
 APP_METADATA_FILENAME = "app.json"
 UPSTREAM_CONFIG_FILENAME = "upstream.toml"
 
@@ -65,10 +65,6 @@ def load_upstream_apps() -> tuple[dict[str, Any], ...]:
         if config["source"] not in SOURCES:
             raise RuntimeError(f"{context}: unknown source {config['source']}")
 
-        order = config.get("order")
-        if not isinstance(order, int) or isinstance(order, bool) or order < 0:
-            raise RuntimeError(f"{context}: order must be a non-negative integer")
-
         asset_name = config.get("asset_name")
         asset_pattern = config.get("asset_pattern")
         if (asset_name is None) == (asset_pattern is None):
@@ -92,7 +88,6 @@ def load_upstream_apps() -> tuple[dict[str, Any], ...]:
             configs,
             key=lambda config: (
                 config["source"],
-                config["order"],
                 config["repo"],
             ),
         )
@@ -389,6 +384,7 @@ def write_json(path: Path, value: Any) -> None:
     path.write_text(
         json.dumps(value, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
+        newline="\n",
     )
 
 
