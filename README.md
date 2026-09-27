@@ -4,6 +4,7 @@
 
 - [Mikan / 蜜柑计划](https://github.com/iota9star/mikan_flutter)
 - [MeloX](https://github.com/youshen2/MeloX)
+- [Venera Prime](https://github.com/venera-app/venera-prime)
 
 ## 添加源
 

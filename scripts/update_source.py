@@ -7,6 +7,7 @@ import argparse
 import json
 import os
 import plistlib
+import re
 import shutil
 import tempfile
 import urllib.request
@@ -32,6 +33,12 @@ UPSTREAM_APPS = (
         "asset_name": "MeloX-iOS-unsigned.ipa",
         "bundle_identifier": "moye.MeloX",
         "app_path": "apps/melox.json",
+    },
+    {
+        "repo": "venera-app/venera-prime",
+        "asset_pattern": r"^venera-prime-ios-.*\.ipa$",
+        "bundle_identifier": "com.github.wgh136.venera.prime",
+        "app_path": "apps/venera-prime.json",
     },
 )
 
@@ -127,6 +134,43 @@ def required_string(info: dict[str, Any], key: str) -> str:
     return value
 
 
+def find_release_asset(
+    release: dict[str, Any], config: dict[str, Any]
+) -> dict[str, Any]:
+    asset_name = config.get("asset_name")
+    asset_pattern = config.get("asset_pattern")
+    if (asset_name is None) == (asset_pattern is None):
+        raise RuntimeError(
+            f"{config['repo']}: configure exactly one of asset_name or asset_pattern"
+        )
+
+    assets = release.get("assets", [])
+    if not isinstance(assets, list):
+        raise RuntimeError(f"{config['repo']}: release assets must be a list")
+
+    if asset_name is not None:
+        matching_assets = [
+            asset for asset in assets if asset.get("name") == asset_name
+        ]
+        expected = asset_name
+    else:
+        pattern = re.compile(asset_pattern)
+        matching_assets = [
+            asset
+            for asset in assets
+            if isinstance(asset.get("name"), str)
+            and pattern.fullmatch(asset["name"])
+        ]
+        expected = f"an asset matching {asset_pattern}"
+
+    if len(matching_assets) != 1:
+        raise RuntimeError(
+            f"{config['repo']}: expected one {expected}, "
+            f"found {len(matching_assets)}"
+        )
+    return matching_assets[0]
+
+
 def read_source() -> dict[str, Any]:
     with SOURCE_CONFIG_PATH.open(encoding="utf-8") as source_file:
         source = json.load(source_file)
@@ -176,18 +220,11 @@ def update_app(source: dict[str, Any], config: dict[str, Any], temp_dir: Path) -
     release = read_json(
         f"https://api.github.com/repos/{config['repo']}/releases/latest"
     )
-    assets = [
-        asset
-        for asset in release.get("assets", [])
-        if asset.get("name") == config["asset_name"]
-    ]
-    if len(assets) != 1:
-        raise RuntimeError(
-            f"{config['repo']}: expected one {config['asset_name']} asset, found {len(assets)}"
-        )
-
-    asset = assets[0]
-    ipa_path = temp_dir / config["asset_name"]
+    asset = find_release_asset(release, config)
+    ipa_name = required_string(asset, "name")
+    if Path(ipa_name).name != ipa_name:
+        raise RuntimeError(f"{config['repo']}: unsafe asset name {ipa_name}")
+    ipa_path = temp_dir / ipa_name
     download_url = required_string(asset, "browser_download_url")
     download(download_url, ipa_path)
     actual_size = ipa_path.stat().st_size

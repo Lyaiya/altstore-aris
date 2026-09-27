@@ -8,7 +8,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scripts.update_source import app_info_from_ipa, read_source
+from scripts.update_source import app_info_from_ipa, find_release_asset, read_source
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -81,7 +81,7 @@ class SplitSourceTests(unittest.TestCase):
         )
         split_apps = [
             json.loads((ROOT / "apps" / filename).read_text(encoding="utf-8"))
-            for filename in ("mikan.json", "melox.json")
+            for filename in ("mikan.json", "melox.json", "venera-prime.json")
         ]
         source = read_source()
 
@@ -97,6 +97,27 @@ class SplitSourceTests(unittest.TestCase):
         self.assertEqual(
             source["apps"][1]["versions"][0]["marketingVersion"], "1.2.1"
         )
+        self.assertEqual(
+            source["apps"][2]["versions"][0]["marketingVersion"], "2.4.1"
+        )
+
+
+class ReleaseAssetTests(unittest.TestCase):
+    def test_finds_asset_by_pattern(self) -> None:
+        release = {
+            "assets": [
+                {"name": "venera-prime-2.4.1.apk"},
+                {"name": "venera-prime-ios-2.4.1+241.ipa"},
+            ]
+        }
+        config = {
+            "repo": "venera-app/venera-prime",
+            "asset_pattern": r"^venera-prime-ios-.*\.ipa$",
+        }
+
+        asset = find_release_asset(release, config)
+
+        self.assertEqual(asset["name"], "venera-prime-ios-2.4.1+241.ipa")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,67 @@
+{
+  "name": "Venera Prime",
+  "bundleIdentifier": "com.github.wgh136.venera.prime",
+  "developerName": "venera-app",
+  "subtitle": "支持本地与网络漫画的跨平台阅读器",
+  "localizedDescription": "支持本地漫画、JavaScript 漫画源、收藏管理、离线下载、评论与标签等功能的跨平台漫画阅读器。",
+  "iconURL": "https://raw.githubusercontent.com/venera-app/venera-prime/master/ios/Runner/Assets.xcassets/AppIcon.appiconset/AppIcon~ios-marketing.png",
+  "tintColor": "#2948F5",
+  "category": "entertainment",
+  "screenshots": [
+    {
+      "imageURL": "https://raw.githubusercontent.com/venera-app/venera-prime/master/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png",
+      "width": 1080,
+      "height": 2400
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/venera-app/venera-prime/master/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png",
+      "width": 1080,
+      "height": 2400
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/venera-app/venera-prime/master/fastlane/metadata/android/en-US/images/phoneScreenshots/3.png",
+      "width": 1080,
+      "height": 2400
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/venera-app/venera-prime/master/fastlane/metadata/android/en-US/images/phoneScreenshots/4.png",
+      "width": 1080,
+      "height": 2400
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/venera-app/venera-prime/master/fastlane/metadata/android/en-US/images/phoneScreenshots/5.png",
+      "width": 1080,
+      "height": 2400
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/venera-app/venera-prime/master/fastlane/metadata/android/en-US/images/phoneScreenshots/6.png",
+      "width": 1080,
+      "height": 2400
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/venera-app/venera-prime/master/fastlane/metadata/android/en-US/images/phoneScreenshots/7.png",
+      "width": 1080,
+      "height": 2400
+    }
+  ],
+  "versions": [
+    {
+      "version": "2.4.1",
+      "buildVersion": "241",
+      "marketingVersion": "2.4.1",
+      "date": "2026-09-18",
+      "localizedDescription": "改进收藏与跟随更新的失败提示和进度处理，优化 WebDAV 同步，并调整百宝箱界面。",
+      "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.4.1/venera-prime-ios-2.4.1%2B241.ipa",
+      "size": 16023621,
+      "minOSVersion": "14.0"
+    }
+  ],
+  "appPermissions": {
+    "entitlements": [],
+    "privacy": {
+      "NSCameraUsageDescription": "Scan WebDAV configuration QR codes",
+      "NSFaceIDUsageDescription": "Ensure that the operation is being performed by the user themselves.",
+      "NSPhotoLibraryUsageDescription": "Choose images"
+    }
+  }
+}
