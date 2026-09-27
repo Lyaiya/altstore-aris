@@ -23,11 +23,11 @@ GITHUB_API_VERSION = "2026-03-10"
 
 SOURCES = {
     "main": {
-        "config_path": ROOT / "data" / "source" / "source.json",
+        "config_path": ROOT / "data" / "sources" / "source.json",
         "output_path": ROOT / "dist" / "source.json",
     },
     "nsfw": {
-        "config_path": ROOT / "data" / "source" / "source-nsfw.json",
+        "config_path": ROOT / "data" / "sources" / "source-nsfw.json",
         "output_path": ROOT / "dist" / "source-nsfw.json",
     },
 }

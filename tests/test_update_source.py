@@ -163,7 +163,7 @@ class SplitSourceTests(unittest.TestCase):
 
     def test_main_source_is_built_from_config_and_split_app_files(self) -> None:
         source_config = json.loads(
-            (ROOT / "data" / "source" / "source.json").read_text(
+            (ROOT / "data" / "sources" / "source.json").read_text(
                 encoding="utf-8"
             )
         )
@@ -191,7 +191,7 @@ class SplitSourceTests(unittest.TestCase):
 
     def test_nsfw_source_is_built_separately(self) -> None:
         source_config = json.loads(
-            (ROOT / "data" / "source" / "source-nsfw.json").read_text(
+            (ROOT / "data" / "sources" / "source-nsfw.json").read_text(
                 encoding="utf-8"
             )
         )
