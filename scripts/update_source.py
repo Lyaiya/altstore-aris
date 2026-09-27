@@ -172,7 +172,7 @@ def write_source(source: dict[str, Any]) -> None:
     write_json(SOURCE_OUTPUT_PATH, source)
 
 
-def update_app(source: dict[str, Any], config: dict[str, str], temp_dir: Path) -> None:
+def update_app(source: dict[str, Any], config: dict[str, Any], temp_dir: Path) -> None:
     release = read_json(
         f"https://api.github.com/repos/{config['repo']}/releases/latest"
     )
@@ -238,6 +238,9 @@ def update_app(source: dict[str, Any], config: dict[str, str], temp_dir: Path) -
     latest_version = {
         "version": version_number,
         "buildVersion": build_number,
+        "marketingVersion": (
+            tag_name[1:] if tag_name.lower().startswith("v") else tag_name
+        ),
         "date": release_date,
         "localizedDescription": description,
         "downloadURL": download_url,

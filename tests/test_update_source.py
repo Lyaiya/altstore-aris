@@ -91,6 +91,12 @@ class SplitSourceTests(unittest.TestCase):
             source_config,
         )
         self.assertEqual(source["apps"], split_apps)
+        self.assertEqual(
+            source["apps"][0]["versions"][0]["marketingVersion"], "2.3.6"
+        )
+        self.assertEqual(
+            source["apps"][1]["versions"][0]["marketingVersion"], "1.2.1"
+        )
 
 
 if __name__ == "__main__":

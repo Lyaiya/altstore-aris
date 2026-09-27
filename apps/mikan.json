@@ -1,5 +1,5 @@
 {
-  "name": "蜜柑计划",
+  "name": "Mikan Project",
   "bundleIdentifier": "io.nichijou.flutter.mikan",
   "developerName": "iota9star",
   "subtitle": "蜜柑计划的 Flutter 客户端",
@@ -7,10 +7,88 @@
   "iconURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/ios/Runner/Assets.xcassets/AppIcon.appiconset/AppIcon~ios-marketing.png",
   "tintColor": "#FF7A45",
   "category": "entertainment",
+  "screenshots": [
+    {
+      "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S01.png",
+      "width": 1368,
+      "height": 3192
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S02.png",
+      "width": 1368,
+      "height": 3192
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S03.png",
+      "width": 1368,
+      "height": 3192
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S04.png",
+      "width": 1368,
+      "height": 3192
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S05.png",
+      "width": 1368,
+      "height": 3192
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S06.png",
+      "width": 1368,
+      "height": 3192
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S07.png",
+      "width": 1368,
+      "height": 3192
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S08.png",
+      "width": 1368,
+      "height": 3192
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S09.png",
+      "width": 1368,
+      "height": 3192
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S10.png",
+      "width": 1368,
+      "height": 3192
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S11.png",
+      "width": 1368,
+      "height": 3192
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S12.png",
+      "width": 1368,
+      "height": 3192
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S13.png",
+      "width": 1368,
+      "height": 3192
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S14.png",
+      "width": 1368,
+      "height": 3192
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S15.png",
+      "width": 1368,
+      "height": 3192
+    }
+  ],
   "versions": [
     {
       "version": "2.3.6",
       "buildVersion": "99",
+      "marketingVersion": "2.3.6",
       "date": "2026-09-12",
       "localizedDescription": "同步上游 v2.3.6 版本。",
       "downloadURL": "https://github.com/iota9star/mikan_flutter/releases/download/v2.3.6/ios-release.ipa",

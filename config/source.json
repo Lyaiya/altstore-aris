@@ -1,7 +1,9 @@
 {
   "name": "Aris Source",
   "subtitle": "持续更新的 AltStore Classic 应用源",
-  "description": "收录并自动更新来自 GitHub Release 的第三方应用，为 AltStore Classic 提供便捷的安装与更新体验。",
+  "description": "收录并自动更新来自 GitHub Release 的第三方应用",
+  "iconURL": "https://github.com/Lyaiya.png",
+  "website": "https://github.com/Lyaiya/altstore-aris",
   "tintColor": "#FF7A45",
   "news": []
 }
