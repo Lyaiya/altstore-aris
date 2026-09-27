@@ -1,0 +1,61 @@
+{
+  "name": "Aris Source",
+  "subtitle": "持续更新的 AltStore Classic 应用源",
+  "description": "收录并自动更新来自 GitHub Release 的第三方应用，为 AltStore Classic 提供便捷的安装与更新体验。",
+  "tintColor": "#FF7A45",
+  "apps": [
+    {
+      "name": "蜜柑计划",
+      "bundleIdentifier": "io.nichijou.flutter.mikan",
+      "developerName": "iota9star",
+      "subtitle": "蜜柑计划的 Flutter 客户端",
+      "localizedDescription": "蜜柑计划（Mikan Project）的第三方 Flutter 客户端。",
+      "iconURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/ios/Runner/Assets.xcassets/AppIcon.appiconset/AppIcon~ios-marketing.png",
+      "tintColor": "#FF7A45",
+      "category": "entertainment",
+      "versions": [
+        {
+          "version": "2.3.6",
+          "buildVersion": "99",
+          "date": "2026-09-12",
+          "localizedDescription": "同步上游 v2.3.6 版本。",
+          "downloadURL": "https://github.com/iota9star/mikan_flutter/releases/download/v2.3.6/ios-release.ipa",
+          "size": 19565331,
+          "minOSVersion": "16.6"
+        }
+      ],
+      "appPermissions": {
+        "entitlements": [],
+        "privacy": {}
+      }
+    },
+    {
+      "name": "MeloX",
+      "bundleIdentifier": "moye.MeloX",
+      "developerName": "youshen2",
+      "subtitle": "原生 SwiftUI 网易云音乐客户端",
+      "localizedDescription": "面向 iPhone、iPad、Mac 与 Apple Watch 的第三方网易云音乐客户端，使用 SwiftUI 构建。",
+      "iconURL": "https://raw.githubusercontent.com/youshen2/MeloX/main/MeloX/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png",
+      "tintColor": "#FA2D48",
+      "category": "entertainment",
+      "versions": [
+        {
+          "version": "2.0",
+          "buildVersion": "9110201",
+          "date": "2026-09-05",
+          "localizedDescription": "同步上游 v1.2.1 Release：改进多声部逐字歌词、收藏专辑入口、歌词加载性能及 Apple Watch 歌词体验，并修复蓝牙设备断开后播放未暂停等问题。",
+          "downloadURL": "https://github.com/youshen2/MeloX/releases/download/v1.2.1/MeloX-iOS-unsigned.ipa",
+          "size": 27542233,
+          "minOSVersion": "26.0"
+        }
+      ],
+      "appPermissions": {
+        "entitlements": [],
+        "privacy": {
+          "NSMicrophoneUsageDescription": "MeloX uses the microphone to identify nearby music on this device."
+        }
+      }
+    }
+  ],
+  "news": []
+}

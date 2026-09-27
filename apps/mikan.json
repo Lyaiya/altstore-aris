@@ -1,0 +1,25 @@
+{
+  "name": "蜜柑计划",
+  "bundleIdentifier": "io.nichijou.flutter.mikan",
+  "developerName": "iota9star",
+  "subtitle": "蜜柑计划的 Flutter 客户端",
+  "localizedDescription": "蜜柑计划（Mikan Project）的第三方 Flutter 客户端。",
+  "iconURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/ios/Runner/Assets.xcassets/AppIcon.appiconset/AppIcon~ios-marketing.png",
+  "tintColor": "#FF7A45",
+  "category": "entertainment",
+  "versions": [
+    {
+      "version": "2.3.6",
+      "buildVersion": "99",
+      "date": "2026-09-12",
+      "localizedDescription": "同步上游 v2.3.6 版本。",
+      "downloadURL": "https://github.com/iota9star/mikan_flutter/releases/download/v2.3.6/ios-release.ipa",
+      "size": 19565331,
+      "minOSVersion": "16.6"
+    }
+  ],
+  "appPermissions": {
+    "entitlements": [],
+    "privacy": {}
+  }
+}
