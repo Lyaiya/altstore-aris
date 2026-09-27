@@ -34,6 +34,7 @@ SOURCES = {
 
 APPS_ROOT = ROOT / "data" / "apps"
 APP_METADATA_FILENAME = "app.json"
+APP_VERSIONS_FILENAME = "versions.json"
 UPSTREAM_CONFIG_FILENAME = "upstream.toml"
 
 IGNORED_ENTITLEMENTS = {
@@ -57,7 +58,7 @@ def load_upstream_apps() -> tuple[dict[str, Any], ...]:
             config = tomllib.load(config_file)
         context = config_path.relative_to(ROOT)
 
-        for key in ("repo", "source", "bundle_identifier"):
+        for key in ("repo", "source"):
             value = config.get(key)
             if not isinstance(value, str) or not value:
                 raise RuntimeError(f"{context}: {key} must be a non-empty string")
@@ -80,7 +81,27 @@ def load_upstream_apps() -> tuple[dict[str, Any], ...]:
         app_path = config_path.parent / APP_METADATA_FILENAME
         if not app_path.is_file():
             raise RuntimeError(f"{context}: missing {APP_METADATA_FILENAME}")
+        with app_path.open(encoding="utf-8") as app_file:
+            app = json.load(app_file)
+        bundle_identifier = app.get("bundleIdentifier")
+        if not isinstance(bundle_identifier, str) or not bundle_identifier:
+            raise RuntimeError(
+                f"{app_path.relative_to(ROOT)}: bundleIdentifier must be a "
+                "non-empty string"
+            )
+        if "versions" in app:
+            raise RuntimeError(
+                f"{app_path.relative_to(ROOT)}: versions must be stored in "
+                f"{APP_VERSIONS_FILENAME}"
+            )
+
+        versions_path = config_path.parent / APP_VERSIONS_FILENAME
+        if not versions_path.is_file():
+            raise RuntimeError(f"{context}: missing {APP_VERSIONS_FILENAME}")
+
+        config["bundle_identifier"] = bundle_identifier
         config["app_path"] = app_path.relative_to(ROOT).as_posix()
+        config["versions_path"] = versions_path.relative_to(ROOT).as_posix()
         configs.append(config)
 
     return tuple(
@@ -364,11 +385,17 @@ def read_source(source_name: str = "main") -> dict[str, Any]:
         app_path = ROOT / config["app_path"]
         with app_path.open(encoding="utf-8") as app_file:
             app = json.load(app_file)
+        versions_path = ROOT / config["versions_path"]
+        with versions_path.open(encoding="utf-8") as versions_file:
+            versions = json.load(versions_file)
+        if not isinstance(versions, list):
+            raise RuntimeError(f"{versions_path}: expected a JSON array")
         if app.get("bundleIdentifier") != config["bundle_identifier"]:
             raise RuntimeError(
                 f"{app_path}: expected bundle ID {config['bundle_identifier']}, "
                 f"found {app.get('bundleIdentifier')}"
             )
+        app["versions"] = versions
         apps.append(app)
 
     source["apps"] = apps
@@ -404,7 +431,18 @@ def write_source(source: dict[str, Any], source_name: str = "main") -> None:
                 "Expected exactly one app with bundle ID "
                 f"{config['bundle_identifier']}"
             )
-        write_json(ROOT / config["app_path"], matching_apps[0])
+        app = matching_apps[0]
+        versions = app.get("versions")
+        if not isinstance(versions, list):
+            raise RuntimeError(
+                f"Expected versions for app with bundle ID "
+                f"{config['bundle_identifier']} to be an array"
+            )
+        app_metadata = {
+            key: value for key, value in app.items() if key != "versions"
+        }
+        write_json(ROOT / config["app_path"], app_metadata)
+        write_json(ROOT / config["versions_path"], versions)
 
     write_json(SOURCES[source_name]["output_path"], source)
 

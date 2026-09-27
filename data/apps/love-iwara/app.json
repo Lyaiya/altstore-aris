@@ -39,18 +39,6 @@
       "height": 1189
     }
   ],
-  "versions": [
-    {
-      "version": "0.6.1",
-      "buildVersion": "4",
-      "marketingVersion": "0.6.1",
-      "date": "2026-09-16",
-      "localizedDescription": "新增本机媒体库、全平台 VR 全景与 3D 视频支持，重构媒体预览、图库浏览和界面材质系统，并将界面语言扩展至 12 种。",
-      "downloadURL": "https://github.com/FoxSensei001/LoveIwara/releases/download/0.6.1/i_iwara-0.6.1-ios.ipa",
-      "size": 27713409,
-      "minOSVersion": "15.0"
-    }
-  ],
   "appPermissions": {
     "entitlements": [],
     "privacy": {

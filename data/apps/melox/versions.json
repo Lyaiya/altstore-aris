@@ -1,0 +1,12 @@
+[
+  {
+    "version": "2.0",
+    "buildVersion": "9110201",
+    "marketingVersion": "1.2.1",
+    "date": "2026-09-05",
+    "localizedDescription": "同步上游 v1.2.1 Release：改进多声部逐字歌词、收藏专辑入口、歌词加载性能及 Apple Watch 歌词体验，并修复蓝牙设备断开后播放未暂停等问题。",
+    "downloadURL": "https://github.com/youshen2/MeloX/releases/download/v1.2.1/MeloX-iOS-unsigned.ipa",
+    "size": 27542233,
+    "minOSVersion": "26.0"
+  }
+]

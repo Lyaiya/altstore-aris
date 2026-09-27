@@ -1,0 +1,12 @@
+[
+  {
+    "version": "2.4.1",
+    "buildVersion": "241",
+    "marketingVersion": "2.4.1",
+    "date": "2026-09-18",
+    "localizedDescription": "改进收藏与跟随更新的失败提示和进度处理，优化 WebDAV 同步，并调整百宝箱界面。",
+    "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.4.1/venera-prime-ios-2.4.1%2B241.ipa",
+    "size": 16023621,
+    "minOSVersion": "14.0"
+  }
+]

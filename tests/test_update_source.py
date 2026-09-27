@@ -20,6 +20,15 @@ from scripts.update_source import (
 ROOT = Path(__file__).resolve().parent.parent
 
 
+def load_split_app(directory: str) -> dict:
+    app_directory = ROOT / "data" / "apps" / directory
+    app = json.loads((app_directory / "app.json").read_text(encoding="utf-8"))
+    app["versions"] = json.loads(
+        (app_directory / "versions.json").read_text(encoding="utf-8")
+    )
+    return app
+
+
 class AppInfoFromIpaTests(unittest.TestCase):
     def create_macho(self, entitlements: dict | None = None) -> bytes:
         if entitlements is None:
@@ -131,6 +140,26 @@ class SplitSourceTests(unittest.TestCase):
                 "data/apps/love-iwara/app.json",
             ],
         )
+        self.assertEqual(
+            [config["versions_path"] for config in configs],
+            [
+                "data/apps/mikan/versions.json",
+                "data/apps/venera-prime/versions.json",
+                "data/apps/melox/versions.json",
+                "data/apps/love-iwara/versions.json",
+            ],
+        )
+
+        for config in configs:
+            app = json.loads(
+                (ROOT / config["app_path"]).read_text(encoding="utf-8")
+            )
+            versions = json.loads(
+                (ROOT / config["versions_path"]).read_text(encoding="utf-8")
+            )
+            self.assertNotIn("versions", app)
+            self.assertIsInstance(versions, list)
+            self.assertEqual(config["bundle_identifier"], app["bundleIdentifier"])
 
     def test_main_source_is_built_from_config_and_split_app_files(self) -> None:
         source_config = json.loads(
@@ -139,11 +168,7 @@ class SplitSourceTests(unittest.TestCase):
             )
         )
         split_apps = [
-            json.loads(
-                (ROOT / "data" / "apps" / directory / "app.json").read_text(
-                    encoding="utf-8"
-                )
-            )
+            load_split_app(directory)
             for directory in ("mikan", "venera-prime", "melox")
         ]
         source = read_source()
@@ -170,11 +195,7 @@ class SplitSourceTests(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        love_iwara = json.loads(
-            (ROOT / "data" / "apps" / "love-iwara" / "app.json").read_text(
-                encoding="utf-8"
-            )
-        )
+        love_iwara = load_split_app("love-iwara")
 
         source = read_source("nsfw")
 

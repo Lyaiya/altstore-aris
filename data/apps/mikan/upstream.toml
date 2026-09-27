@@ -1,4 +1,3 @@
 repo = "iota9star/mikan_flutter"
 source = "main"
 asset_name = "ios-release.ipa"
-bundle_identifier = "io.nichijou.flutter.mikan"
