@@ -1,0 +1,19 @@
+{
+  "name": "IwrQk",
+  "bundleIdentifier": "com.iwrqk.app",
+  "developerName": "h-sumiya",
+  "subtitle": "基于 Flutter 的 Iwara 第三方客户端",
+  "localizedDescription": "兼容新版 Iwara 的跨平台第三方客户端，支持视频下载、好友管理、关注与订阅、收藏、播放列表、评论、论坛、播放器和图库浏览等功能。",
+  "iconURL": "https://raw.githubusercontent.com/h-sumiya/iwrqk/master/doc/icon.png",
+  "tintColor": "#6750A4",
+  "category": "photo-video",
+  "screenshots": [
+    "https://raw.githubusercontent.com/h-sumiya/iwrqk/master/doc/1.png",
+    "https://raw.githubusercontent.com/h-sumiya/iwrqk/master/doc/2.png",
+    "https://raw.githubusercontent.com/h-sumiya/iwrqk/master/doc/3.png"
+  ],
+  "appPermissions": {
+    "entitlements": [],
+    "privacy": {}
+  }
+}

@@ -10,6 +10,7 @@
 
 NSFW 源收录：
 
+- [IwrQk](https://github.com/h-sumiya/iwrqk)
 - [Love Iwara](https://github.com/FoxSensei001/LoveIwara)
 
 ## 添加源
