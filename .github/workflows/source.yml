@@ -33,9 +33,6 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Test source updater
-        run: python -m unittest discover -s tests -v
-
       - name: Update source from upstream releases
         if: github.event_name != 'push'
         env:

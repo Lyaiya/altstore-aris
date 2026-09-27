@@ -7,13 +7,13 @@ import argparse
 import json
 import os
 import plistlib
-import re
 import shutil
 import struct
 import tempfile
 import tomllib
 import urllib.request
 import zipfile
+from fnmatch import fnmatchcase
 from pathlib import Path
 from typing import Any
 
@@ -66,17 +66,9 @@ def load_upstream_apps() -> tuple[dict[str, Any], ...]:
         if config["source"] not in SOURCES:
             raise RuntimeError(f"{context}: unknown source {config['source']}")
 
-        asset_name = config.get("asset_name")
-        asset_pattern = config.get("asset_pattern")
-        if (asset_name is None) == (asset_pattern is None):
-            raise RuntimeError(
-                f"{context}: configure exactly one of asset_name or asset_pattern"
-            )
-        asset_key = "asset_name" if asset_name is not None else "asset_pattern"
-        if not isinstance(config[asset_key], str) or not config[asset_key]:
-            raise RuntimeError(
-                f"{context}: {asset_key} must be a non-empty string"
-            )
+        asset = config.get("asset")
+        if not isinstance(asset, str) or not asset:
+            raise RuntimeError(f"{context}: asset must be a non-empty glob string")
 
         app_path = config_path.parent / APP_METADATA_FILENAME
         if not app_path.is_file():
@@ -337,35 +329,24 @@ def required_string(info: dict[str, Any], key: str) -> str:
 def find_release_asset(
     release: dict[str, Any], config: dict[str, Any]
 ) -> dict[str, Any]:
-    asset_name = config.get("asset_name")
-    asset_pattern = config.get("asset_pattern")
-    if (asset_name is None) == (asset_pattern is None):
-        raise RuntimeError(
-            f"{config['repo']}: configure exactly one of asset_name or asset_pattern"
-        )
+    asset_glob = config.get("asset")
+    if not isinstance(asset_glob, str) or not asset_glob:
+        raise RuntimeError(f"{config['repo']}: asset must be a non-empty glob string")
 
     assets = release.get("assets", [])
     if not isinstance(assets, list):
         raise RuntimeError(f"{config['repo']}: release assets must be a list")
 
-    if asset_name is not None:
-        matching_assets = [
-            asset for asset in assets if asset.get("name") == asset_name
-        ]
-        expected = asset_name
-    else:
-        pattern = re.compile(asset_pattern)
-        matching_assets = [
-            asset
-            for asset in assets
-            if isinstance(asset.get("name"), str)
-            and pattern.fullmatch(asset["name"])
-        ]
-        expected = f"an asset matching {asset_pattern}"
+    matching_assets = [
+        asset
+        for asset in assets
+        if isinstance(asset.get("name"), str)
+        and fnmatchcase(asset["name"], asset_glob)
+    ]
 
     if len(matching_assets) != 1:
         raise RuntimeError(
-            f"{config['repo']}: expected one {expected}, "
+            f"{config['repo']}: expected one asset matching {asset_glob}, "
             f"found {len(matching_assets)}"
         )
     return matching_assets[0]
