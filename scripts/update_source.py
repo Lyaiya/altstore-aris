@@ -11,6 +11,7 @@ import re
 import shutil
 import struct
 import tempfile
+import tomllib
 import urllib.request
 import zipfile
 from pathlib import Path
@@ -31,6 +32,10 @@ SOURCES = {
     },
 }
 
+APPS_ROOT = ROOT / "apps"
+APP_METADATA_FILENAME = "app.json"
+UPSTREAM_CONFIG_FILENAME = "upstream.toml"
+
 IGNORED_ENTITLEMENTS = {
     "application-identifier",
     "com.app.developer.team-identifier",
@@ -38,36 +43,63 @@ IGNORED_ENTITLEMENTS = {
     "com.apple.developer.team-identifier",
 }
 
-UPSTREAM_APPS = (
-    {
-        "repo": "iota9star/mikan_flutter",
-        "source": "main",
-        "asset_name": "ios-release.ipa",
-        "bundle_identifier": "io.nichijou.flutter.mikan",
-        "app_path": "apps/mikan.json",
-    },
-    {
-        "repo": "youshen2/MeloX",
-        "source": "main",
-        "asset_name": "MeloX-iOS-unsigned.ipa",
-        "bundle_identifier": "moye.MeloX",
-        "app_path": "apps/melox.json",
-    },
-    {
-        "repo": "venera-app/venera-prime",
-        "source": "main",
-        "asset_pattern": r"^venera-prime-ios-.*\.ipa$",
-        "bundle_identifier": "com.github.wgh136.venera.prime",
-        "app_path": "apps/venera-prime.json",
-    },
-    {
-        "repo": "FoxSensei001/LoveIwara",
-        "source": "nsfw",
-        "asset_pattern": r"^i_iwara-.*-ios\.ipa$",
-        "bundle_identifier": "m.c.g.a.i-iwara",
-        "app_path": "apps/nsfw/loveiwara.json",
-    },
-)
+
+def load_upstream_apps() -> tuple[dict[str, Any], ...]:
+    configs = []
+    config_paths = sorted(APPS_ROOT.glob(f"*/{UPSTREAM_CONFIG_FILENAME}"))
+    if not config_paths:
+        raise RuntimeError(
+            f"No {UPSTREAM_CONFIG_FILENAME} files found in {APPS_ROOT}"
+        )
+
+    for config_path in config_paths:
+        with config_path.open("rb") as config_file:
+            config = tomllib.load(config_file)
+        context = config_path.relative_to(ROOT)
+
+        for key in ("repo", "source", "bundle_identifier"):
+            value = config.get(key)
+            if not isinstance(value, str) or not value:
+                raise RuntimeError(f"{context}: {key} must be a non-empty string")
+
+        if config["source"] not in SOURCES:
+            raise RuntimeError(f"{context}: unknown source {config['source']}")
+
+        order = config.get("order")
+        if not isinstance(order, int) or isinstance(order, bool) or order < 0:
+            raise RuntimeError(f"{context}: order must be a non-negative integer")
+
+        asset_name = config.get("asset_name")
+        asset_pattern = config.get("asset_pattern")
+        if (asset_name is None) == (asset_pattern is None):
+            raise RuntimeError(
+                f"{context}: configure exactly one of asset_name or asset_pattern"
+            )
+        asset_key = "asset_name" if asset_name is not None else "asset_pattern"
+        if not isinstance(config[asset_key], str) or not config[asset_key]:
+            raise RuntimeError(
+                f"{context}: {asset_key} must be a non-empty string"
+            )
+
+        app_path = config_path.parent / APP_METADATA_FILENAME
+        if not app_path.is_file():
+            raise RuntimeError(f"{context}: missing {APP_METADATA_FILENAME}")
+        config["app_path"] = app_path.relative_to(ROOT).as_posix()
+        configs.append(config)
+
+    return tuple(
+        sorted(
+            configs,
+            key=lambda config: (
+                config["source"],
+                config["order"],
+                config["repo"],
+            ),
+        )
+    )
+
+
+UPSTREAM_APPS = load_upstream_apps()
 
 
 def request(

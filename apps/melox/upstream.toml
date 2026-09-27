@@ -1,0 +1,5 @@
+repo = "youshen2/MeloX"
+source = "main"
+order = 20
+asset_name = "MeloX-iOS-unsigned.ipa"
+bundle_identifier = "moye.MeloX"

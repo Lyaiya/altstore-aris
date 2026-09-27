@@ -8,7 +8,7 @@
 - [MeloX](https://github.com/youshen2/MeloX)
 - [Venera Prime](https://github.com/venera-app/venera-prime)
 
-NSFW 源单独收录：
+NSFW 源收录：
 
 - [Love Iwara](https://github.com/FoxSensei001/LoveIwara)
 
@@ -28,7 +28,9 @@ https://lyaiya.github.io/altstore-aris/source-nsfw.json
 
 ## 更新
 
-GitHub Actions 会每天检查上游 Release，并在有新版本时更新 `apps/` 中的数据并重新发布源。也可以在 Actions 页面手动运行 `Update and publish source`。
+GitHub Actions 会每天检查上游 Release，并在有新版本时更新 `apps/` 中的数据并重新发布源。
+
+每个应用保存在 `apps/<slug>/` 目录中：`app.json` 存放 AltStore 元数据，`upstream.toml` 存放上游 Release 的更新规则。
 
 修改 `config/` 或 `apps/` 中的文件后，可在本地生成两个源文件：
 

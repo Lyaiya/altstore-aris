@@ -9,7 +9,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scripts.update_source import app_info_from_ipa, find_release_asset, read_source
+from scripts.update_source import (
+    app_info_from_ipa,
+    find_release_asset,
+    load_upstream_apps,
+    read_source,
+)
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -114,13 +119,30 @@ class AppInfoFromIpaTests(unittest.TestCase):
 
 
 class SplitSourceTests(unittest.TestCase):
+    def test_upstream_configs_are_discovered_in_source_order(self) -> None:
+        configs = load_upstream_apps()
+
+        self.assertEqual(
+            [config["app_path"] for config in configs],
+            [
+                "apps/mikan/app.json",
+                "apps/melox/app.json",
+                "apps/venera-prime/app.json",
+                "apps/love-iwara/app.json",
+            ],
+        )
+
     def test_main_source_is_built_from_config_and_split_app_files(self) -> None:
         source_config = json.loads(
             (ROOT / "config" / "source.json").read_text(encoding="utf-8")
         )
         split_apps = [
-            json.loads((ROOT / "apps" / filename).read_text(encoding="utf-8"))
-            for filename in ("mikan.json", "melox.json", "venera-prime.json")
+            json.loads(
+                (ROOT / "apps" / directory / "app.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            for directory in ("mikan", "melox", "venera-prime")
         ]
         source = read_source()
 
@@ -144,8 +166,8 @@ class SplitSourceTests(unittest.TestCase):
         source_config = json.loads(
             (ROOT / "config" / "source-nsfw.json").read_text(encoding="utf-8")
         )
-        loveiwara = json.loads(
-            (ROOT / "apps" / "nsfw" / "loveiwara.json").read_text(
+        love_iwara = json.loads(
+            (ROOT / "apps" / "love-iwara" / "app.json").read_text(
                 encoding="utf-8"
             )
         )
@@ -157,7 +179,7 @@ class SplitSourceTests(unittest.TestCase):
             {key: value for key, value in source.items() if key != "apps"},
             source_config,
         )
-        self.assertEqual(source["apps"], [loveiwara])
+        self.assertEqual(source["apps"], [love_iwara])
         self.assertEqual(
             source["apps"][0]["versions"][0]["marketingVersion"], "0.6.1"
         )

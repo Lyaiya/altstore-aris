@@ -1,0 +1,5 @@
+repo = "venera-app/venera-prime"
+source = "main"
+order = 30
+asset_pattern = '^venera-prime-ios-.*\.ipa$'
+bundle_identifier = "com.github.wgh136.venera.prime"
