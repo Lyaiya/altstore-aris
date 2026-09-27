@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Update source.json from the latest upstream GitHub release IPAs."""
+"""Build the AltStore source from metadata and upstream release IPAs."""
 
 from __future__ import annotations
 
@@ -16,7 +16,8 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parent.parent
-SOURCE_PATH = ROOT / "source.json"
+SOURCE_CONFIG_PATH = ROOT / "config" / "source.json"
+SOURCE_OUTPUT_PATH = ROOT / "dist" / "source.json"
 GITHUB_API_VERSION = "2026-03-10"
 
 UPSTREAM_APPS = (
@@ -127,7 +128,7 @@ def required_string(info: dict[str, Any], key: str) -> str:
 
 
 def read_source() -> dict[str, Any]:
-    with SOURCE_PATH.open(encoding="utf-8") as source_file:
+    with SOURCE_CONFIG_PATH.open(encoding="utf-8") as source_file:
         source = json.load(source_file)
 
     apps = []
@@ -147,6 +148,7 @@ def read_source() -> dict[str, Any]:
 
 
 def write_json(path: Path, value: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
         json.dumps(value, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
@@ -167,7 +169,7 @@ def write_source(source: dict[str, Any]) -> None:
             )
         write_json(ROOT / config["app_path"], matching_apps[0])
 
-    write_json(SOURCE_PATH, source)
+    write_json(SOURCE_OUTPUT_PATH, source)
 
 
 def update_app(source: dict[str, Any], config: dict[str, str], temp_dir: Path) -> None:
@@ -211,7 +213,7 @@ def update_app(source: dict[str, Any], config: dict[str, str], temp_dir: Path) -
     ]
     if len(apps) != 1:
         raise RuntimeError(
-            f"source.json must contain exactly one app with bundle ID {bundle_identifier}"
+            f"source must contain exactly one app with bundle ID {bundle_identifier}"
         )
     app = apps[0]
 
@@ -264,7 +266,7 @@ def main() -> None:
     parser.add_argument(
         "--build-only",
         action="store_true",
-        help="merge apps/*.json into source.json without checking GitHub releases",
+        help="build dist/source.json without checking GitHub releases",
     )
     args = parser.parse_args()
     source = read_source()

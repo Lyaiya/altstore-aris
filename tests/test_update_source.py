@@ -8,7 +8,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scripts.update_source import app_info_from_ipa
+from scripts.update_source import app_info_from_ipa, read_source
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -75,13 +75,21 @@ class AppInfoFromIpaTests(unittest.TestCase):
 
 
 class SplitSourceTests(unittest.TestCase):
-    def test_source_apps_match_split_app_files(self) -> None:
-        source = json.loads((ROOT / "source.json").read_text(encoding="utf-8"))
+    def test_source_is_built_from_config_and_split_app_files(self) -> None:
+        source_config = json.loads(
+            (ROOT / "config" / "source.json").read_text(encoding="utf-8")
+        )
         split_apps = [
             json.loads((ROOT / "apps" / filename).read_text(encoding="utf-8"))
             for filename in ("mikan.json", "melox.json")
         ]
+        source = read_source()
 
+        self.assertNotIn("apps", source_config)
+        self.assertEqual(
+            {key: value for key, value in source.items() if key != "apps"},
+            source_config,
+        )
         self.assertEqual(source["apps"], split_apps)
 
 
