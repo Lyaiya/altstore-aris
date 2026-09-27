@@ -9,6 +9,7 @@ import os
 import plistlib
 import re
 import shutil
+import struct
 import tempfile
 import urllib.request
 import zipfile
@@ -17,28 +18,54 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parent.parent
-SOURCE_CONFIG_PATH = ROOT / "config" / "source.json"
-SOURCE_OUTPUT_PATH = ROOT / "dist" / "source.json"
 GITHUB_API_VERSION = "2026-03-10"
+
+SOURCES = {
+    "main": {
+        "config_path": ROOT / "config" / "source.json",
+        "output_path": ROOT / "dist" / "source.json",
+    },
+    "nsfw": {
+        "config_path": ROOT / "config" / "source-nsfw.json",
+        "output_path": ROOT / "dist" / "source-nsfw.json",
+    },
+}
+
+IGNORED_ENTITLEMENTS = {
+    "application-identifier",
+    "com.app.developer.team-identifier",
+    "com.apple.application-identifier",
+    "com.apple.developer.team-identifier",
+}
 
 UPSTREAM_APPS = (
     {
         "repo": "iota9star/mikan_flutter",
+        "source": "main",
         "asset_name": "ios-release.ipa",
         "bundle_identifier": "io.nichijou.flutter.mikan",
         "app_path": "apps/mikan.json",
     },
     {
         "repo": "youshen2/MeloX",
+        "source": "main",
         "asset_name": "MeloX-iOS-unsigned.ipa",
         "bundle_identifier": "moye.MeloX",
         "app_path": "apps/melox.json",
     },
     {
         "repo": "venera-app/venera-prime",
+        "source": "main",
         "asset_pattern": r"^venera-prime-ios-.*\.ipa$",
         "bundle_identifier": "com.github.wgh136.venera.prime",
         "app_path": "apps/venera-prime.json",
+    },
+    {
+        "repo": "FoxSensei001/LoveIwara",
+        "source": "nsfw",
+        "asset_pattern": r"^i_iwara-.*-ios\.ipa$",
+        "bundle_identifier": "m.c.g.a.i-iwara",
+        "app_path": "apps/nsfw/loveiwara.json",
     },
 )
 
@@ -77,7 +104,127 @@ def download(url: str, destination: Path) -> None:
         shutil.copyfileobj(response, output)
 
 
-def app_info_from_ipa(ipa_path: Path) -> tuple[dict[str, Any], dict[str, str]]:
+def _macho_slices(data: bytes, context: str) -> list[bytes]:
+    fat_formats = {
+        b"\xca\xfe\xba\xbe": (">", False, 20),
+        b"\xbe\xba\xfe\xca": ("<", False, 20),
+        b"\xca\xfe\xba\xbf": (">", True, 32),
+        b"\xbf\xba\xfe\xca": ("<", True, 32),
+    }
+    fat_format = fat_formats.get(data[:4])
+    if fat_format is None:
+        return [data]
+
+    endian, is_64_bit, record_size = fat_format
+    if len(data) < 8:
+        raise RuntimeError(f"{context}: truncated universal Mach-O header")
+    architecture_count = struct.unpack_from(f"{endian}I", data, 4)[0]
+    slices = []
+    for index in range(architecture_count):
+        record_offset = 8 + index * record_size
+        if record_offset + record_size > len(data):
+            raise RuntimeError(f"{context}: truncated universal Mach-O record")
+        if is_64_bit:
+            slice_offset, slice_size = struct.unpack_from(
+                f"{endian}QQ", data, record_offset + 8
+            )
+        else:
+            slice_offset, slice_size = struct.unpack_from(
+                f"{endian}II", data, record_offset + 8
+            )
+        if slice_offset + slice_size > len(data):
+            raise RuntimeError(f"{context}: invalid universal Mach-O slice")
+        slices.append(data[slice_offset : slice_offset + slice_size])
+    return slices
+
+
+def _entitlements_from_signature(signature: bytes, context: str) -> set[str]:
+    if len(signature) < 12:
+        raise RuntimeError(f"{context}: truncated code signature")
+    magic, total_length, blob_count = struct.unpack_from(">III", signature)
+    if magic != 0xFADE0CC0 or total_length > len(signature):
+        raise RuntimeError(f"{context}: invalid embedded code signature")
+
+    entitlements: set[str] = set()
+    found_xml_entitlements = False
+    found_der_entitlements = False
+    for index in range(blob_count):
+        entry_offset = 12 + index * 8
+        if entry_offset + 8 > total_length:
+            raise RuntimeError(f"{context}: truncated code signature index")
+        slot_type, blob_offset = struct.unpack_from(">II", signature, entry_offset)
+        if blob_offset + 8 > total_length:
+            raise RuntimeError(f"{context}: invalid code signature blob offset")
+        blob_magic, blob_length = struct.unpack_from(">II", signature, blob_offset)
+        if blob_length < 8 or blob_offset + blob_length > total_length:
+            raise RuntimeError(f"{context}: invalid code signature blob length")
+
+        if slot_type == 5:
+            if blob_magic != 0xFADE7171:
+                raise RuntimeError(f"{context}: invalid entitlement blob")
+            payload = signature[blob_offset + 8 : blob_offset + blob_length]
+            values = plistlib.loads(payload.rstrip(b"\0"))
+            if not isinstance(values, dict):
+                raise RuntimeError(f"{context}: entitlements must be a dictionary")
+            entitlements.update(values)
+            found_xml_entitlements = True
+        elif slot_type == 7:
+            found_der_entitlements = True
+
+    if found_der_entitlements and not found_xml_entitlements:
+        raise RuntimeError(
+            f"{context}: DER-only entitlements require manual review"
+        )
+    return entitlements
+
+
+def _entitlements_from_macho(data: bytes, context: str) -> set[str]:
+    macho_formats = {
+        b"\xce\xfa\xed\xfe": ("<", 28),
+        b"\xcf\xfa\xed\xfe": ("<", 32),
+        b"\xfe\xed\xfa\xce": (">", 28),
+        b"\xfe\xed\xfa\xcf": (">", 32),
+    }
+    entitlements: set[str] = set()
+    for binary in _macho_slices(data, context):
+        macho_format = macho_formats.get(binary[:4])
+        if macho_format is None:
+            raise RuntimeError(f"{context}: executable is not a Mach-O binary")
+        endian, header_size = macho_format
+        if len(binary) < header_size:
+            raise RuntimeError(f"{context}: truncated Mach-O header")
+        command_count = struct.unpack_from(f"{endian}I", binary, 16)[0]
+        command_offset = header_size
+
+        for _ in range(command_count):
+            if command_offset + 8 > len(binary):
+                raise RuntimeError(f"{context}: truncated Mach-O load command")
+            command, command_size = struct.unpack_from(
+                f"{endian}II", binary, command_offset
+            )
+            if command_size < 8 or command_offset + command_size > len(binary):
+                raise RuntimeError(f"{context}: invalid Mach-O load command")
+            if command == 0x1D:
+                if command_size < 16:
+                    raise RuntimeError(f"{context}: invalid code signature command")
+                signature_offset, signature_size = struct.unpack_from(
+                    f"{endian}II", binary, command_offset + 8
+                )
+                if signature_offset + signature_size > len(binary):
+                    raise RuntimeError(f"{context}: invalid code signature range")
+                signature = binary[
+                    signature_offset : signature_offset + signature_size
+                ]
+                entitlements.update(
+                    _entitlements_from_signature(signature, context)
+                )
+            command_offset += command_size
+    return entitlements
+
+
+def app_info_from_ipa(
+    ipa_path: Path,
+) -> tuple[dict[str, Any], dict[str, str], list[str]]:
     with zipfile.ZipFile(ipa_path) as archive:
         names = archive.namelist()
         main_plists = [
@@ -92,23 +239,18 @@ def app_info_from_ipa(ipa_path: Path) -> tuple[dict[str, Any], dict[str, str]]:
                 f"Expected exactly one main app Info.plist, found {main_plists}"
             )
 
-        main_app_prefix = main_plists[0][: -len("Info.plist")]
-        signature_resources = f"{main_app_prefix}_CodeSignature/CodeResources"
-        if signature_resources in names:
-            raise RuntimeError(
-                "The main app is signed. Review and update appPermissions.entitlements "
-                "before publishing this release."
-            )
-
         main_info = plistlib.loads(archive.read(main_plists[0]))
         privacy: dict[str, str] = {}
+        entitlements: set[str] = set()
 
         for name in names:
             if (
                 not name.startswith("Payload/")
                 or not name.endswith("/Info.plist")
-                or "/Frameworks/" in name
-                or ".bundle/Info.plist" in name
+                or not (
+                    name.endswith(".app/Info.plist")
+                    or name.endswith(".appex/Info.plist")
+                )
             ):
                 continue
 
@@ -124,7 +266,17 @@ def app_info_from_ipa(ipa_path: Path) -> tuple[dict[str, Any], dict[str, str]]:
                     )
                 privacy[key] = value
 
-    return main_info, privacy
+            executable = required_string(info, "CFBundleExecutable")
+            executable_path = name[: -len("Info.plist")] + executable
+            if executable_path not in names:
+                raise RuntimeError(f"{name}: missing executable {executable}")
+            entitlements.update(
+                _entitlements_from_macho(
+                    archive.read(executable_path), executable_path
+                )
+            )
+
+    return main_info, privacy, sorted(entitlements - IGNORED_ENTITLEMENTS)
 
 
 def required_string(info: dict[str, Any], key: str) -> str:
@@ -171,12 +323,17 @@ def find_release_asset(
     return matching_assets[0]
 
 
-def read_source() -> dict[str, Any]:
-    with SOURCE_CONFIG_PATH.open(encoding="utf-8") as source_file:
+def read_source(source_name: str = "main") -> dict[str, Any]:
+    if source_name not in SOURCES:
+        raise RuntimeError(f"Unknown source {source_name}")
+    source_config = SOURCES[source_name]
+    with source_config["config_path"].open(encoding="utf-8") as source_file:
         source = json.load(source_file)
 
     apps = []
     for config in UPSTREAM_APPS:
+        if config["source"] != source_name:
+            continue
         app_path = ROOT / config["app_path"]
         with app_path.open(encoding="utf-8") as app_file:
             app = json.load(app_file)
@@ -191,6 +348,10 @@ def read_source() -> dict[str, Any]:
     return source
 
 
+def read_sources() -> dict[str, dict[str, Any]]:
+    return {source_name: read_source(source_name) for source_name in SOURCES}
+
+
 def write_json(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
@@ -199,8 +360,12 @@ def write_json(path: Path, value: Any) -> None:
     )
 
 
-def write_source(source: dict[str, Any]) -> None:
+def write_source(source: dict[str, Any], source_name: str = "main") -> None:
+    if source_name not in SOURCES:
+        raise RuntimeError(f"Unknown source {source_name}")
     for config in UPSTREAM_APPS:
+        if config["source"] != source_name:
+            continue
         matching_apps = [
             app
             for app in source["apps"]
@@ -213,7 +378,12 @@ def write_source(source: dict[str, Any]) -> None:
             )
         write_json(ROOT / config["app_path"], matching_apps[0])
 
-    write_json(SOURCE_OUTPUT_PATH, source)
+    write_json(SOURCES[source_name]["output_path"], source)
+
+
+def write_sources(sources: dict[str, dict[str, Any]]) -> None:
+    for source_name, source in sources.items():
+        write_source(source, source_name)
 
 
 def update_app(source: dict[str, Any], config: dict[str, Any], temp_dir: Path) -> None:
@@ -234,7 +404,7 @@ def update_app(source: dict[str, Any], config: dict[str, Any], temp_dir: Path) -
             f"{config['repo']}: downloaded size {actual_size} does not match "
             f"GitHub asset size {expected_size}"
         )
-    info, privacy = app_info_from_ipa(ipa_path)
+    info, privacy, entitlements = app_info_from_ipa(ipa_path)
 
     bundle_identifier = required_string(info, "CFBundleIdentifier")
     if bundle_identifier != config["bundle_identifier"]:
@@ -293,6 +463,7 @@ def update_app(source: dict[str, Any], config: dict[str, Any], temp_dir: Path) -
         )
     ]
     app["versions"] = [latest_version, *older_versions]
+    app["appPermissions"]["entitlements"] = entitlements
     app["appPermissions"]["privacy"] = privacy
 
     print(
@@ -306,10 +477,10 @@ def main() -> None:
     parser.add_argument(
         "--build-only",
         action="store_true",
-        help="build dist/source.json without checking GitHub releases",
+        help="build source JSON files without checking GitHub releases",
     )
     args = parser.parse_args()
-    source = read_source()
+    sources = read_sources()
 
     if not args.build_only:
         with tempfile.TemporaryDirectory(prefix="altstore-source-") as temp_name:
@@ -317,9 +488,9 @@ def main() -> None:
             for index, config in enumerate(UPSTREAM_APPS):
                 app_temp = temp_root / str(index)
                 app_temp.mkdir()
-                update_app(source, config, app_temp)
+                update_app(sources[config["source"]], config, app_temp)
 
-    write_source(source)
+    write_sources(sources)
 
 
 if __name__ == "__main__":

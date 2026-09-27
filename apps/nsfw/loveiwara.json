@@ -1,0 +1,62 @@
+{
+  "name": "Love Iwara",
+  "bundleIdentifier": "m.c.g.a.i-iwara",
+  "developerName": "FoxSensei001",
+  "subtitle": "快速、美观的 Iwara 第三方跨平台客户端",
+  "localizedDescription": "Love Iwara（2i）是使用 Flutter 构建的 Iwara 第三方客户端，支持视频、图库、论坛、本地媒体和下载等功能。开发者与 Iwara 及其内容提供商无关联，应用本身不托管内容。",
+  "iconURL": "https://raw.githubusercontent.com/FoxSensei001/LoveIwara/master/assets/icon/launcher_icon_v2.png",
+  "tintColor": "#F89032",
+  "category": "photo-video",
+  "screenshots": [
+    {
+      "imageURL": "https://raw.githubusercontent.com/FoxSensei001/LoveIwara/master/docs/imgs/home_screen.png",
+      "width": 1400,
+      "height": 804
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/FoxSensei001/LoveIwara/master/docs/imgs/video_detail.png",
+      "width": 1400,
+      "height": 858
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/FoxSensei001/LoveIwara/master/docs/imgs/gallery.png",
+      "width": 1400,
+      "height": 804
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/FoxSensei001/LoveIwara/master/docs/imgs/forum_page.png",
+      "width": 1400,
+      "height": 804
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/FoxSensei001/LoveIwara/master/docs/imgs/local_page.png",
+      "width": 1400,
+      "height": 804
+    },
+    {
+      "imageURL": "https://raw.githubusercontent.com/FoxSensei001/LoveIwara/master/docs/imgs/settings_page.png",
+      "width": 1400,
+      "height": 1189
+    }
+  ],
+  "versions": [
+    {
+      "version": "0.6.1",
+      "buildVersion": "4",
+      "marketingVersion": "0.6.1",
+      "date": "2026-09-16",
+      "localizedDescription": "新增本机媒体库、全平台 VR 全景与 3D 视频支持，重构媒体预览、图库浏览和界面材质系统，并将界面语言扩展至 12 种。",
+      "downloadURL": "https://github.com/FoxSensei001/LoveIwara/releases/download/0.6.1/i_iwara-0.6.1-ios.ipa",
+      "size": 27713409,
+      "minOSVersion": "15.0"
+    }
+  ],
+  "appPermissions": {
+    "entitlements": [],
+    "privacy": {
+      "NSFaceIDUsageDescription": "Face ID is used to unlock Love Iwara when app lock is enabled.",
+      "NSLocalNetworkUsageDescription": "App需要访问本地网络",
+      "NSLocationWhenInUseUsageDescription": "App需要访问位置来获取WiFi信息"
+    }
+  }
+}
