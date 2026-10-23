@@ -1,5 +1,15 @@
 [
   {
+    "version": "2.2.4",
+    "buildVersion": "2",
+    "marketingVersion": "2.2.4",
+    "date": "2026-10-22",
+    "localizedDescription": "同步上游 v2.2.4 版本。",
+    "downloadURL": "https://github.com/h-sumiya/iwrqk/releases/download/v2.2.4/iwrqk-2.2.4%2B2.ipa",
+    "size": 20930135,
+    "minOSVersion": "14.0"
+  },
+  {
     "version": "2.2.3",
     "buildVersion": "2.2.3",
     "marketingVersion": "2.2.3",
