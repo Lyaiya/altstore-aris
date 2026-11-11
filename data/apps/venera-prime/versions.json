@@ -1,5 +1,15 @@
 [
   {
+    "version": "2.8.1",
+    "buildVersion": "281",
+    "marketingVersion": "2.8.1",
+    "date": "2026-11-10",
+    "localizedDescription": "同步上游 v2.8.1 版本。",
+    "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.8.1/venera-prime-ios-2.8.1%2B281.ipa",
+    "size": 16730617,
+    "minOSVersion": "14.0"
+  },
+  {
     "version": "2.8.0",
     "buildVersion": "280",
     "marketingVersion": "2.8.0",
