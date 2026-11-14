@@ -18,18 +18,18 @@ NSFW 源收录：
 常规源：
 
 ```text
-https://lyaiya.github.io/altstore-aris/source.json
+https://raw.githubusercontent.com/Lyaiya/altstore-aris/main/dist/source.json
 ```
 
 NSFW 源：
 
 ```text
-https://lyaiya.github.io/altstore-aris/source-nsfw.json
+https://raw.githubusercontent.com/Lyaiya/altstore-aris/main/dist/source-nsfw.json
 ```
 
 ## 更新
 
-GitHub Actions 会每天检查上游 Release，并在有新版本时更新 `data/apps/` 中的数据并重新发布源。
+GitHub Actions 会每天检查上游 Release，并在有新版本时更新 `data/apps/` 中的数据，重新生成 `dist/` 中的源文件并提交到仓库。
 
 每个应用保存在 `data/apps/<slug>/` 目录中：`app.json` 存放 AltStore 元数据，`versions.json` 存放版本历史，`upstream.toml` 存放上游 Release 的更新规则。源级元数据保存在 `data/sources/` 中。
 

@@ -1,0 +1,373 @@
+{
+  "name": "Aris Source",
+  "iconURL": "https://github.com/Lyaiya.png",
+  "website": "https://github.com/Lyaiya/altstore-aris",
+  "tintColor": "#FF7A45",
+  "nsfw": false,
+  "news": [],
+  "apps": [
+    {
+      "name": "Mikan Project",
+      "bundleIdentifier": "io.nichijou.flutter.mikan",
+      "developerName": "iota9star",
+      "subtitle": "蜜柑计划的 Flutter 客户端",
+      "localizedDescription": "蜜柑计划（Mikan Project）的第三方 Flutter 客户端。",
+      "iconURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/ios/Runner/Assets.xcassets/AppIcon.appiconset/AppIcon~ios-marketing.png",
+      "tintColor": "#FF7A45",
+      "category": "entertainment",
+      "screenshots": [
+        {
+          "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S01.png",
+          "width": 1368,
+          "height": 3192
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S02.png",
+          "width": 1368,
+          "height": 3192
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S03.png",
+          "width": 1368,
+          "height": 3192
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S04.png",
+          "width": 1368,
+          "height": 3192
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S05.png",
+          "width": 1368,
+          "height": 3192
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S06.png",
+          "width": 1368,
+          "height": 3192
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S07.png",
+          "width": 1368,
+          "height": 3192
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S08.png",
+          "width": 1368,
+          "height": 3192
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S09.png",
+          "width": 1368,
+          "height": 3192
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S10.png",
+          "width": 1368,
+          "height": 3192
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S11.png",
+          "width": 1368,
+          "height": 3192
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S12.png",
+          "width": 1368,
+          "height": 3192
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S13.png",
+          "width": 1368,
+          "height": 3192
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S14.png",
+          "width": 1368,
+          "height": 3192
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/iota9star/mikan_flutter/main/static/screenshot/S15.png",
+          "width": 1368,
+          "height": 3192
+        }
+      ],
+      "appPermissions": {
+        "entitlements": [],
+        "privacy": {}
+      },
+      "versions": [
+        {
+          "version": "2.3.6",
+          "buildVersion": "99",
+          "marketingVersion": "2.3.6",
+          "date": "2026-09-12",
+          "localizedDescription": "同步上游 v2.3.6 版本。",
+          "downloadURL": "https://github.com/iota9star/mikan_flutter/releases/download/v2.3.6/ios-release.ipa",
+          "size": 19565331,
+          "minOSVersion": "16.6"
+        }
+      ]
+    },
+    {
+      "name": "Venera Prime",
+      "bundleIdentifier": "com.github.wgh136.venera.prime",
+      "developerName": "venera-app",
+      "subtitle": "支持本地与网络漫画的跨平台阅读器",
+      "localizedDescription": "支持本地漫画、JavaScript 漫画源、收藏管理、离线下载、评论与标签等功能的跨平台漫画阅读器。",
+      "iconURL": "https://raw.githubusercontent.com/venera-app/venera-prime/master/ios/Runner/Assets.xcassets/AppIcon.appiconset/AppIcon~ios-marketing.png",
+      "tintColor": "#2948F5",
+      "category": "entertainment",
+      "screenshots": [
+        {
+          "imageURL": "https://raw.githubusercontent.com/venera-app/venera-prime/master/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png",
+          "width": 1080,
+          "height": 2400
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/venera-app/venera-prime/master/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png",
+          "width": 1080,
+          "height": 2400
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/venera-app/venera-prime/master/fastlane/metadata/android/en-US/images/phoneScreenshots/3.png",
+          "width": 1080,
+          "height": 2400
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/venera-app/venera-prime/master/fastlane/metadata/android/en-US/images/phoneScreenshots/4.png",
+          "width": 1080,
+          "height": 2400
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/venera-app/venera-prime/master/fastlane/metadata/android/en-US/images/phoneScreenshots/5.png",
+          "width": 1080,
+          "height": 2400
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/venera-app/venera-prime/master/fastlane/metadata/android/en-US/images/phoneScreenshots/6.png",
+          "width": 1080,
+          "height": 2400
+        },
+        {
+          "imageURL": "https://raw.githubusercontent.com/venera-app/venera-prime/master/fastlane/metadata/android/en-US/images/phoneScreenshots/7.png",
+          "width": 1080,
+          "height": 2400
+        }
+      ],
+      "appPermissions": {
+        "entitlements": [],
+        "privacy": {
+          "NSCameraUsageDescription": "Scan WebDAV configuration QR codes",
+          "NSFaceIDUsageDescription": "Ensure that the operation is being performed by the user themselves.",
+          "NSPhotoLibraryUsageDescription": "Choose images"
+        }
+      },
+      "versions": [
+        {
+          "version": "2.8.1",
+          "buildVersion": "281",
+          "marketingVersion": "2.8.1",
+          "date": "2026-11-10",
+          "localizedDescription": "同步上游 v2.8.1 版本。",
+          "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.8.1/venera-prime-ios-2.8.1%2B281.ipa",
+          "size": 16730617,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "2.8.0",
+          "buildVersion": "280",
+          "marketingVersion": "2.8.0",
+          "date": "2026-11-06",
+          "localizedDescription": "同步上游 v2.8.0 版本。",
+          "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.8.0/venera-prime-ios-2.8.0%2B280.ipa",
+          "size": 16717141,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "2.7.2",
+          "buildVersion": "272",
+          "marketingVersion": "2.7.2",
+          "date": "2026-11-04",
+          "localizedDescription": "同步上游 v2.7.2 版本。",
+          "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.7.2/venera-prime-ios-2.7.2%2B272.ipa",
+          "size": 16716650,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "2.7.0",
+          "buildVersion": "270",
+          "marketingVersion": "2.7.0",
+          "date": "2026-11-03",
+          "localizedDescription": "同步上游 v2.7.0 版本。",
+          "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.7.0/venera-prime-ios-2.7.0%2B270.ipa",
+          "size": 16692937,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "2.6.3",
+          "buildVersion": "263",
+          "marketingVersion": "2.6.3",
+          "date": "2026-10-17",
+          "localizedDescription": "同步上游 v2.6.3 版本。",
+          "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.6.3/venera-prime-ios-2.6.3%2B263.ipa",
+          "size": 16597545,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "2.6.1",
+          "buildVersion": "261",
+          "marketingVersion": "2.6.1",
+          "date": "2026-10-16",
+          "localizedDescription": "同步上游 v2.6.1 版本。",
+          "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.6.1/venera-prime-ios-2.6.1%2B261.ipa",
+          "size": 16570331,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "2.6.0",
+          "buildVersion": "260",
+          "marketingVersion": "2.6.0",
+          "date": "2026-10-15",
+          "localizedDescription": "同步上游 v2.6.0 版本。",
+          "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.6.0/venera-prime-ios-2.6.0%2B260.ipa",
+          "size": 16571605,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "2.5.6",
+          "buildVersion": "256",
+          "marketingVersion": "2.5.6",
+          "date": "2026-10-14",
+          "localizedDescription": "同步上游 v2.5.6 版本。",
+          "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.5.6/venera-prime-ios-2.5.6%2B256.ipa",
+          "size": 16566312,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "2.5.2",
+          "buildVersion": "252",
+          "marketingVersion": "2.5.2",
+          "date": "2026-10-14",
+          "localizedDescription": "同步上游 v2.5.2 版本。",
+          "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.5.2/venera-prime-ios-2.5.2%2B252.ipa",
+          "size": 16564534,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "2.4.6",
+          "buildVersion": "246",
+          "marketingVersion": "2.4.6",
+          "date": "2026-10-11",
+          "localizedDescription": "同步上游 v2.4.6 版本。",
+          "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.4.6/venera-prime-ios-2.4.6%2B246.ipa",
+          "size": 16459736,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "2.4.4",
+          "buildVersion": "244",
+          "marketingVersion": "2.4.4",
+          "date": "2026-10-10",
+          "localizedDescription": "同步上游 v2.4.4 版本。",
+          "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.4.4/venera-prime-ios-2.4.4%2B244.ipa",
+          "size": 16053526,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "2.4.3",
+          "buildVersion": "243",
+          "marketingVersion": "2.4.3",
+          "date": "2026-10-07",
+          "localizedDescription": "同步上游 v2.4.3 版本。",
+          "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.4.3/venera-prime-ios-2.4.3%2B243.ipa",
+          "size": 16048075,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "2.4.2",
+          "buildVersion": "242",
+          "marketingVersion": "2.4.2",
+          "date": "2026-09-29",
+          "localizedDescription": "同步上游 v2.4.2 版本。",
+          "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.4.2/venera-prime-ios-2.4.2%2B242.ipa",
+          "size": 16031076,
+          "minOSVersion": "14.0"
+        },
+        {
+          "version": "2.4.1",
+          "buildVersion": "241",
+          "marketingVersion": "2.4.1",
+          "date": "2026-09-18",
+          "localizedDescription": "改进收藏与跟随更新的失败提示和进度处理，优化 WebDAV 同步，并调整百宝箱界面。",
+          "downloadURL": "https://github.com/venera-app/venera-prime/releases/download/v2.4.1/venera-prime-ios-2.4.1%2B241.ipa",
+          "size": 16023621,
+          "minOSVersion": "14.0"
+        }
+      ]
+    },
+    {
+      "name": "MeloX",
+      "bundleIdentifier": "moye.MeloX",
+      "developerName": "youshen2",
+      "subtitle": "原生 SwiftUI 网易云音乐客户端",
+      "localizedDescription": "面向 iPhone、iPad、Mac 与 Apple Watch 的第三方网易云音乐客户端，使用 SwiftUI 构建。",
+      "iconURL": "https://raw.githubusercontent.com/youshen2/MeloX/main/MeloX/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png",
+      "tintColor": "#FA2D48",
+      "category": "entertainment",
+      "screenshots": [
+        "https://raw.githubusercontent.com/youshen2/MeloX/main/docs/screenshots/0.png",
+        "https://raw.githubusercontent.com/youshen2/MeloX/main/docs/screenshots/1.png",
+        "https://raw.githubusercontent.com/youshen2/MeloX/main/docs/screenshots/3.png"
+      ],
+      "appPermissions": {
+        "entitlements": [],
+        "privacy": {
+          "NSMicrophoneUsageDescription": "MeloX uses the microphone to identify nearby music on this device."
+        }
+      },
+      "versions": [
+        {
+          "version": "2.0",
+          "buildVersion": "9110401",
+          "marketingVersion": "1.4.1",
+          "date": "2026-10-30",
+          "localizedDescription": "同步上游 v1.4.1 版本。",
+          "downloadURL": "https://github.com/youshen2/MeloX/releases/download/v1.4.1/MeloX-iOS-unsigned.ipa",
+          "size": 30440912,
+          "minOSVersion": "26.0"
+        },
+        {
+          "version": "2.0",
+          "buildVersion": "9110400",
+          "marketingVersion": "1.4.0",
+          "date": "2026-10-24",
+          "localizedDescription": "同步上游 v1.4.0 版本。",
+          "downloadURL": "https://github.com/youshen2/MeloX/releases/download/v1.4.0/MeloX-iOS-unsigned.ipa",
+          "size": 30363506,
+          "minOSVersion": "26.0"
+        },
+        {
+          "version": "2.0",
+          "buildVersion": "9110300",
+          "marketingVersion": "1.3.0",
+          "date": "2026-10-16",
+          "localizedDescription": "同步上游 v1.3.0 版本。",
+          "downloadURL": "https://github.com/youshen2/MeloX/releases/download/v1.3.0/MeloX-iOS-unsigned.ipa",
+          "size": 27881976,
+          "minOSVersion": "26.0"
+        },
+        {
+          "version": "2.0",
+          "buildVersion": "9110201",
+          "marketingVersion": "1.2.1",
+          "date": "2026-09-05",
+          "localizedDescription": "同步上游 v1.2.1 Release：改进多声部逐字歌词、收藏专辑入口、歌词加载性能及 Apple Watch 歌词体验，并修复蓝牙设备断开后播放未暂停等问题。",
+          "downloadURL": "https://github.com/youshen2/MeloX/releases/download/v1.2.1/MeloX-iOS-unsigned.ipa",
+          "size": 27542233,
+          "minOSVersion": "26.0"
+        }
+      ]
+    }
+  ]
+}

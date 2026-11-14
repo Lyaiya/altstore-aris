@@ -9,6 +9,7 @@ import os
 import plistlib
 import shutil
 import struct
+import subprocess
 import tempfile
 import tomllib
 import urllib.request
@@ -396,34 +397,41 @@ def write_json(path: Path, value: Any) -> None:
     )
 
 
+def find_app(source: dict[str, Any], config: dict[str, Any]) -> dict[str, Any]:
+    matching_apps = [
+        app
+        for app in source["apps"]
+        if app.get("bundleIdentifier") == config["bundle_identifier"]
+    ]
+    if len(matching_apps) != 1:
+        raise RuntimeError(
+            "Expected exactly one app with bundle ID "
+            f"{config['bundle_identifier']}"
+        )
+    return matching_apps[0]
+
+
+def write_app_data(config: dict[str, Any], app: dict[str, Any]) -> None:
+    versions = app.get("versions")
+    if not isinstance(versions, list):
+        raise RuntimeError(
+            f"Expected versions for app with bundle ID "
+            f"{config['bundle_identifier']} to be an array"
+        )
+    app_metadata = {
+        key: value for key, value in app.items() if key != "versions"
+    }
+    write_json(ROOT / config["app_path"], app_metadata)
+    write_json(ROOT / config["versions_path"], versions)
+
+
 def write_source(source: dict[str, Any], source_name: str = "main") -> None:
     if source_name not in SOURCES:
         raise RuntimeError(f"Unknown source {source_name}")
     for config in UPSTREAM_APPS:
         if config["source"] != source_name:
             continue
-        matching_apps = [
-            app
-            for app in source["apps"]
-            if app.get("bundleIdentifier") == config["bundle_identifier"]
-        ]
-        if len(matching_apps) != 1:
-            raise RuntimeError(
-                "Expected exactly one app with bundle ID "
-                f"{config['bundle_identifier']}"
-            )
-        app = matching_apps[0]
-        versions = app.get("versions")
-        if not isinstance(versions, list):
-            raise RuntimeError(
-                f"Expected versions for app with bundle ID "
-                f"{config['bundle_identifier']} to be an array"
-            )
-        app_metadata = {
-            key: value for key, value in app.items() if key != "versions"
-        }
-        write_json(ROOT / config["app_path"], app_metadata)
-        write_json(ROOT / config["versions_path"], versions)
+        write_app_data(config, find_app(source, config))
 
     write_json(SOURCES[source_name]["output_path"], source)
 
@@ -431,6 +439,21 @@ def write_source(source: dict[str, Any], source_name: str = "main") -> None:
 def write_sources(sources: dict[str, dict[str, Any]]) -> None:
     for source_name, source in sources.items():
         write_source(source, source_name)
+
+
+def git(*args: str) -> str:
+    result = subprocess.run(
+        ["git", *args], check=True, capture_output=True, text=True
+    )
+    return result.stdout
+
+
+def commit(message: str, *paths: str) -> None:
+    git("add", "--", *paths)
+    if not git("diff", "--cached", "--name-only", "--", *paths).strip():
+        return
+    git("commit", "-m", message)
+    print(f"committed: {message}")
 
 
 def update_app(source: dict[str, Any], config: dict[str, Any], temp_dir: Path) -> None:
@@ -489,18 +512,20 @@ def update_app(source: dict[str, Any], config: dict[str, Any], temp_dir: Path) -
         else f"同步上游 {tag_name} 版本。"
     )
 
+    marketing_version = (
+        tag_name[1:] if tag_name.lower().startswith("v") else tag_name
+    )
     latest_version = {
         "version": version_number,
         "buildVersion": build_number,
-        "marketingVersion": (
-            tag_name[1:] if tag_name.lower().startswith("v") else tag_name
-        ),
+        "marketingVersion": marketing_version,
         "date": release_date,
         "localizedDescription": description,
         "downloadURL": download_url,
         "size": actual_size,
         "minOSVersion": minimum_os,
     }
+    versions_before = list(app["versions"])
     older_versions = [
         version
         for version in app["versions"]
@@ -518,6 +543,37 @@ def update_app(source: dict[str, Any], config: dict[str, Any], temp_dir: Path) -
         f"{version_number} ({build_number}), {actual_size} bytes"
     )
 
+    if app["versions"] == versions_before:
+        return None
+    return {
+        "app": Path(config["app_path"]).parent.name,
+        "version": version_number,
+        "buildVersion": build_number,
+        "marketingVersion": marketing_version,
+    }
+
+
+def commit_app(
+    sources: dict[str, dict[str, Any]],
+    config: dict[str, Any],
+    report: dict[str, Any] | None,
+) -> None:
+    source = sources[config["source"]]
+    write_app_data(config, find_app(source, config))
+    write_json(SOURCES[config["source"]]["output_path"], source)
+
+    slug = Path(config["app_path"]).parent.name
+    if report is not None:
+        message = (
+            f"chore({slug}): 同步上游 "
+            f"{report['marketingVersion']} ({report['buildVersion']})"
+        )
+    else:
+        message = f"chore({slug}): 更新应用元数据"
+    app_dir = Path(config["app_path"]).parent.as_posix()
+    dist = SOURCES[config["source"]]["output_path"].relative_to(ROOT).as_posix()
+    commit(message, app_dir, dist)
+
 
 def main() -> None:
     parser = argparse.ArgumentParser()
@@ -526,18 +582,46 @@ def main() -> None:
         action="store_true",
         help="build source JSON files without checking GitHub releases",
     )
+    parser.add_argument(
+        "--commit",
+        action="store_true",
+        help="commit generated changes; when checking upstream releases, "
+        "create one commit per updated app",
+    )
+    parser.add_argument(
+        "--report",
+        type=Path,
+        help="write a JSON report of apps updated from upstream releases to "
+        "this path",
+    )
     args = parser.parse_args()
     sources = read_sources()
 
-    if not args.build_only:
+    updated = []
+    if args.build_only:
+        write_sources(sources)
+        if args.commit:
+            dist_paths = tuple(
+                source_config["output_path"].relative_to(ROOT).as_posix()
+                for source_config in SOURCES.values()
+            )
+            commit("chore: update AltStore source", *dist_paths)
+    else:
         with tempfile.TemporaryDirectory(prefix="altstore-source-") as temp_name:
             temp_root = Path(temp_name)
             for index, config in enumerate(UPSTREAM_APPS):
                 app_temp = temp_root / str(index)
                 app_temp.mkdir()
-                update_app(sources[config["source"]], config, app_temp)
+                report = update_app(sources[config["source"]], config, app_temp)
+                if report is not None:
+                    updated.append(report)
+                if args.commit:
+                    commit_app(sources, config, report)
+        if not args.commit:
+            write_sources(sources)
 
-    write_sources(sources)
+    if args.report is not None:
+        write_json(args.report, {"updated": updated})
 
 
 if __name__ == "__main__":
